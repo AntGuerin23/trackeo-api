@@ -18,3 +18,12 @@ services:
     image: mongo
     ports:
       - 27017:27017
+
+  mosquitto:
+      image: eclipse-mosquitto
+      container_name: "trackeo_broker"
+      volumes:
+          - ./docker/mosquitto:/mosquitto
+      ports:
+          - 1883:1883
+          - 9001:9001

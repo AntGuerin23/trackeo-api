@@ -1,28 +1,25 @@
-module.exports.waitForPositions = waitForPositions;
+const mqttLibrary = require("mqtt");
+const connectionUrl = `mqtt://trackeo_broker:1883`;
 
-function waitForPositions(callback) {
-    const client = setupClient();
-    sub(client, "locations");
-    listenForMessages(client, callback);
-}
-
-function sub(client, topic) {
-	client.subscribe([topic], () => {
-		console.log(`Subscribed to ${topic}`);
-	})
-}
-
-function listenForMessages(client, callback) {
-	client.on('message', (topic, payload) => callback(topic, payload));
+exports.askForLocation = function() {
+    const client = mqttLibrary.connect(connectionUrl,{
+        clean: true,
+        connectTimeout: 4000,
+        reconnectPeriod: 100
+    });
+    console.log('start');
+    client.publish('locations', 'refresh');
+    //client.end();
+    console.log('exiting...');
 }
 
 function setupClient() {
     const mqttLibrary = require("mqtt");
-	const connectionUrl = `mqtt://localhost:1883`
+	const connectionUrl = `mqtt://localhost:1883`;
 	const client = mqttLibrary.connect(connectionUrl,{
 		clean: true,
 		connectTimeout: 4000,
 		reconnectPeriod: 100
 	});
-    return client
+    return client;
 }
